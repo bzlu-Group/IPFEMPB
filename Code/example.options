@@ -1,0 +1,6 @@
+-epsilon_solute 2.0 
+-epsilon_solvent 80.0 
+-concentration 0.10 
+-temp 298.15 
+-pqr ADP.pqr 
+-PB_type LPBE
