@@ -12,8 +12,8 @@ FLOAT Epsilon_s = 80.0;/*Relative dielectric constant of solent*/
 FLOAT Epsilon_p = 2.0;/*Relative dielectric constant of solute*/
 FLOAT C_b = 0.10;/*ionic concentration mol/L*/
 FLOAT T = 298.15;/*Temperature： k*/
-char *fn_pqr = NULL;/*pqr file*/
-char *PB_type = NULL;
+char *fn_pqr = "ADP.pqr";/*pqr file*/
+char *PB_type = "LPBE";
 INT PB_Type = 1;/*1: LPBE; 2: NPBE. */
 FLOAT Domain_length = -1.0;/*Domain: [-Domain_lenth, Domain_lenth]^3*/
 FLOAT box_size = -1.0;
@@ -34,7 +34,7 @@ INT Extra_orders = 3;/*extra integral order of interface*/
 BOOLEAN dump_solver = FALSE;
 INT refine0 = 12, refine_step = 3;
 INT PrintType = 3;
-char *fn_mesh = NULL;/*mesh file*/
+char *fn_mesh = "No Mesh";/*mesh file*/
 BOOLEAN use_aly = FALSE;/*Only used in the box-sphere analytic solution algorithm.*/
 
 void
@@ -44,7 +44,7 @@ OptionsRegister(){
     phgOptionsRegisterFloat("-concentration", "the ionic concentration. unit: mol/L", &C_b);
     phgOptionsRegisterFloat("-temp", "the temperature. unit: K", &T);
     phgOptionsRegisterFilename("-pqr", "the PQR file", &fn_pqr);
-    phgOptionsRegisterFilename("-PB_type", "the type of PBE (LPBE or NPBE) to be solved", &PB_type);
+    phgOptionsRegisterString("-PB_type", "the type of PBE (LPBE or NPBE) to be solved", &PB_type);
     phgOptionsRegisterFloat("-box_length", "denotes the size of the calculation domain $[ -box_length, box_length]^3$", &Domain_length);
     phgOptionsRegisterFloat("-box_size", "the size of the initial mesh", &box_size);
     phgOptionsRegisterInt("-ls_order", "the order of polynomial interpolation for Gaussian molecular surface ", &ls_order);
@@ -52,8 +52,7 @@ OptionsRegister(){
 
     phgOptionsRegisterNoArg("-use_aly", "only used in the box-sphere analytic solution algorithm", &use_aly);
 	phgOptionsRegisterFilename("-fn_mesh", "mesh file", &fn_mesh);
-    phgOptionsRegisterInt("-refine0", "The number of times the initial grid is uniformly refined, \
-                        each time for dichotomous refinement, it is recommended to choose a multiple of 3", &refine0);
+    phgOptionsRegisterInt("-refine0", "The number of times the initial grid is uniformly refined, each time for dichotomous refinement, it is recommended to choose a multiple of 3", &refine0);
     phgOptionsPreset("-dof_type P1 -solver gmres -gmres_type flgmres_r -gmres_pc_type solver -gmres_pc_opts {-solver asm -asm_overlap 5} -lgmres_augk 7");
     phgOptionsPreset("-xfem_ctol 1.0");
     phgOptionsPreset("-xfem_dbg_level=0");

@@ -28,8 +28,7 @@ Initialize(){
     }
     if(PB_type == NULL || !strcmp(PB_type, "LPBE")){
         PB_Type = 1;
-        PB_type = "LPBE";
-        
+        //PB_type = "LPBE";   
     }
     else if(!strcmp(PB_type, "NPBE")){
         PB_Type = 2;

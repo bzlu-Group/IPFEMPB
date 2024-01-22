@@ -19,7 +19,6 @@ typedef struct{
 #define E _F(2.71828182845904523536) /*e*/
 #define Epsilon_0  (8.8541878e-12)/*Vacuum Permittivity： kg-1 m-3 s4 A2*/
 #define E_c (1.6021765e-19)/*Unit charge： s A*/
-
 #define K_B (1.3806488e-23)/*Boltzmann constant： kg m2 s-2 k-1*/
 #define Na (6.02214129e23) /*Avogadro constant*/
 

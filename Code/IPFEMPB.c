@@ -23,6 +23,7 @@ int main(int argc,char *argv[]){
     int level = 0, total_level = 0;
     double t = 0.0, t_tol = phgGetTime(NULL), t_level = 0.0;
 	BOOLEAN remove_IP = FALSE;
+	char *mesh_creat = NULL;
 
     /*Load phg options*/
     OptionsRegister();
@@ -51,7 +52,7 @@ int main(int argc,char *argv[]){
 		sprintf(name, "%s%s", "test_", PB_type);
 	}
 #if OUT_LOG
-    char log_name[50];
+    char log_name[150];
 	sprintf(log_name, "%s%s", name, ".log");
 	//remove(log_name);
 	FILE *fp_out = freopen(log_name,"w",stdout);
@@ -66,13 +67,17 @@ int main(int argc,char *argv[]){
 
     g = phgNewGrid(-1);
 
-	if(fn_mesh == NULL){
-		fn_mesh = Creat_Domin(Protein_MaxXYZ, Protein_MaxR);
+	if(fn_mesh == NULL || !strcmp(fn_mesh, "No Mesh")){
+		mesh_creat = Creat_Domin(Protein_MaxXYZ, Protein_MaxR);
 		remove_IP = TRUE;
+		if (!phgImport(g, mesh_creat, TRUE)){
+        	phgError(1, "can't read file \"%s\".\n", mesh_creat);
+		}
 	}
-	
-    if (!phgImport(g, fn_mesh, TRUE)){
-        phgError(1, "can't read file \"%s\".\n", fn_mesh);
+	else{
+    	if (!phgImport(g, fn_mesh, TRUE)){
+        	phgError(1, "can't read file \"%s\".\n", fn_mesh);
+		}
 	}
 	if(box_size > 0.0){
 		refine0 = Max(refine0, 3 * ((int)(log(2*Domain_length/box_size) / log(2.0)) + 3));
@@ -118,7 +123,8 @@ int main(int argc,char *argv[]){
 	phgDofSetDataByFunction(ls_grad, ls_grad_func);
 
 	if(remove_IP){
-		remove(fn_mesh);
+		assert(mesh_creat != NULL);
+		remove(mesh_creat);
 	}
 
 	if(PB_Type == 2){
@@ -152,25 +158,30 @@ int main(int argc,char *argv[]){
     /*export vtk*/
 	if(!use_aly && vtk){
 		ELEMENT *e;
-		char name_vtk[50];
+		char name_vtk[150];
 		sprintf(name_vtk, "%s%s", name, ".vtk");
 		ForAllElements(g, e)
 			e->region_mark = xi->info[e->index].mark;
-		//phgDofAXPBY(0.0, u2_h, (1/Beta), &u2_h);
-		u2_h->name = "phi";
-		phgExportVTK(g, name_vtk, u2_h, ls, NULL);
+		DOF *phi;
+		phi = phgDofCopy(u2_h, NULL, NULL, "phi");
+		phgDofAXPBY(0.0, u2_h, (1/Beta), &phi);
+		phgExportVTK(g, name_vtk, phi, ls, NULL);
 		phgPrintf("\"%s\" created.\n", name_vtk);
+		phgDofFree(&phi);
 	}
 #if OUT_LOG
 	fclose(fp_out);
 #endif
+
 	phgXFEMFree(&xi);
-    
     phgDofFree(&u1_h);
     phgDofFree(&u2_h);
     phgDofFree(&ls);
     phgDofFree(&ls_grad);
     phgFreeGrid(&g);
-    phgFinalize(); 
+
+	
+    phgFinalize();
+
     return 0;
 }

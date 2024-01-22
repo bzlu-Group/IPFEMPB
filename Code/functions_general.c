@@ -10,9 +10,7 @@
 char* 
 Creat_Domin(FLOAT *protein_len, FLOAT protein_rmax){
 	/*Create a Calculation Area*/
-	if(fn_mesh != NULL){
-		return fn_mesh;
-	}
+	assert(fn_mesh == NULL || !strcmp(fn_mesh, "No Mesh"));
 	if(!use_aly){
 	int i = 0;
 	BOOLEAN user = TRUE;
@@ -38,7 +36,6 @@ Creat_Domin(FLOAT *protein_len, FLOAT protein_rmax){
 	}
 	static char mesh_name[100];
 	sprintf(mesh_name, "cube_%d.mesh", (int)(Domain_length));
-	fn_mesh = mesh_name;
 
 	FILE *f_out = fopen(mesh_name, "w");
 
@@ -84,7 +81,10 @@ void Read_pqr(char *fn_pqr){
 	phgPrintf("****************************Begin read %s *********************************\n", fn_pqr);
     while(fscanf(f_in, "%s", s[0]) != EOF) {
 		if(strcmp(s[0], "ATOM") != 0) continue;
-		fscanf(f_in, "%s%s%s%s%lf%lf%lf%lf%lf",s[1],s[2],s[3],s[4],&x,&y,&z,&zi,&r);
+		int tmp = fscanf(f_in, "%s%s%s%s%lf%lf%lf%lf%lf",s[1],s[2],s[3],s[4],&x,&y,&z,&zi,&r);
+		if(tmp != 1){
+			tmp++;
+		}
 		if(r < 1e-3){
 			phgPrintf("warning %d atom: r = %lf\n", N_m, r);
 		}
@@ -195,23 +195,17 @@ cal_error(XFEM_INFO *xi, DOF *u1_h, DOF *u2_h, DOF *u1_old, DOF *u2_old, FLOAT *
 	H1norm = Sqrt(phgXFEMDot(xi, gerror1, gerror2, gerror1, gerror2));
 	H1norm += L2norm;
 
-	int realornot = 0;
-	FLOAT old_l2 = 0.0, old_h1 = 0.0;
 	FLOAT d;
 	d = Sqrt(phgXFEMDot(xi, u1_h, u2_h, u1_h, u2_h));
 	if (L2norm < d){
-		old_l2 = L2norm;
         L2norm = d;
-		realornot = 1;
 	}
 	DOF *u1h_grad, *u2h_grad;
 	u1h_grad = phgDofGradient(u1_h, NULL, NULL, "u1h_grad");
 	u2h_grad = phgDofGradient(u2_h, NULL, NULL, "u2h_grad");
 	d = L2norm + Sqrt(phgXFEMDot(xi, u1h_grad, u2h_grad, u1h_grad, u2h_grad));
 	if (H1norm < d){
-		old_h1 = H1norm;
 	    H1norm = d;
-		realornot = 1;
 	}
 	phgDofFree(&u1h_grad);
 	phgDofFree(&u2h_grad);
