@@ -20,6 +20,8 @@ mpirun -np 32 ./IPFEMPB #denotes running IPFEMPB using 32 MPI processes,
 -xfem_ctol 1.0 #denotes the tolerance used to limit the relative curvature of the surface with respect to the size of neighboring elements
 -ls_order 2 #denotes the order of polynomial interpolation for Gaussian molecular surface
 -vtk #export vtk-file: XXX.vtk
+-log #denotes the output file name
+-vtk_name #denotes the vtk-file name
 
 We also provide a tool for visualization of the molecular surface potential:
 Get XXX.vtk and run "python Get_Surface_Potential.py XXX.vtk", you can get the visualization of the molecular surface potential file XXX_Surface_Potential.vtk
