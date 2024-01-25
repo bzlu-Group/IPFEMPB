@@ -37,6 +37,9 @@ INT PrintType = 3;
 char *fn_mesh = "No Mesh";/*mesh file*/
 BOOLEAN use_aly = FALSE;/*Only used in the box-sphere analytic solution algorithm.*/
 
+char *Log_Name = "No Name";
+char *vtk_name = "No Name";
+
 void
 OptionsRegister(){
     phgOptionsRegisterFloat("-epsilon_solute", "the relative permittivity of solute.", &Epsilon_p);
@@ -49,6 +52,8 @@ OptionsRegister(){
     phgOptionsRegisterFloat("-box_size", "the size of the initial mesh", &box_size);
     phgOptionsRegisterInt("-ls_order", "the order of polynomial interpolation for Gaussian molecular surface ", &ls_order);
     phgOptionsRegisterNoArg("-vtk", "If or not output vtk-file", &vtk);
+    phgOptionsRegisterString("-log", "name of output file", &Log_Name);
+    phgOptionsRegisterString("-vtk_name", "name of output vtk file", &vtk_name);
 
     phgOptionsRegisterNoArg("-use_aly", "only used in the box-sphere analytic solution algorithm", &use_aly);
 	phgOptionsRegisterFilename("-fn_mesh", "mesh file", &fn_mesh);

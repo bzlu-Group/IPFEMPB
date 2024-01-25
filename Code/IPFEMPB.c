@@ -53,7 +53,12 @@ int main(int argc,char *argv[]){
 	}
 #if OUT_LOG
     char log_name[150];
-	sprintf(log_name, "%s%s", name, ".log");
+	if(Log_Name == NULL || !strcmp(Log_Name, "No Name")){
+		sprintf(log_name, "%s%s", name, ".log");
+	}
+	else{
+		sprintf(log_name, "%s", Log_Name);
+	}
 	//remove(log_name);
 	FILE *fp_out = freopen(log_name,"w",stdout);
     if(NULL == fp_out)
@@ -159,7 +164,13 @@ int main(int argc,char *argv[]){
 	if(!use_aly && vtk){
 		ELEMENT *e;
 		char name_vtk[150];
-		sprintf(name_vtk, "%s%s", name, ".vtk");
+		if(vtk_name == NULL || !strcmp(vtk_name, "No Name")){
+			sprintf(name_vtk, "%s%s", name, ".vtk");
+		}
+		else{
+			sprintf(name_vtk, "%s", vtk_name);
+		}
+		
 		ForAllElements(g, e)
 			e->region_mark = xi->info[e->index].mark;
 		DOF *phi;

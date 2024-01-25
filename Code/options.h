@@ -18,6 +18,8 @@ extern BOOLEAN use_aly;/*Only used in the box-sphere analytic solution algorithm
 extern FLOAT T;
 extern FLOAT box_size;
 extern char *PB_type;
+extern char *Log_Name;
+extern char *vtk_name;
 
 /*other parameters*/
 extern INT Max_N_m;/*max Number of atoms*/
